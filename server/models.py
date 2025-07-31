@@ -14,8 +14,18 @@ class User(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String, nullable=False)
 
+  mood = db.relationship('MoodTracker', back_populates='user')
+
   def __repr__(self):
     return f"<User {self.id}, {self.name}>"
 
-class Mood(db.Model):
-  pass
+class MoodTracker(db.Model):
+  __tablename__ = 'mood_tracker'
+
+  id = db.Column(db.Integer, primary_key=True)
+  mood = db.Column(db.String, nullable=False)
+  notes = db.Column(db.String, nullable=False)
+
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+  user = db.relationship('User', back_populates='mood')
+
