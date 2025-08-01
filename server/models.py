@@ -18,6 +18,12 @@ class User(db.Model):
 
   def __repr__(self):
     return f"<User {self.id}, {self.name}>"
+  
+class UserSchema(Schema):
+  id = fields.Int(dump_only=True)
+  name = fields.String()
+
+  mood = fields.Nested(lambda: UserSchema(exclude=("user",)))
 
 class MoodTracker(db.Model):
   __tablename__ = 'mood_tracker'
@@ -28,4 +34,11 @@ class MoodTracker(db.Model):
 
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
   user = db.relationship('User', back_populates='mood')
+
+class MoodTrackerSchema(Schema):
+  id = fields.Int(dump_only=True)
+  mood = fields.String()
+  notes = fields.String()
+
+  user = fields.Nested(lambda: UserSchema(exclude=("mood",)))
 
