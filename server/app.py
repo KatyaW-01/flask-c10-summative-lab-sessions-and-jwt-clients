@@ -8,6 +8,8 @@ class Signup(Resource):
   def post(self):
     user_request = request.get_json()
     name = user_request.get('name')
+    username = user_request.get('username')
+    password = user_request.get('password')
 
 class Login(Resource):
   def post(self):

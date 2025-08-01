@@ -12,11 +12,11 @@ with app.app_context():
 
   print("Creating Users...")
 
-  user1 = User(name="Josh")
-  user2 = User(name="Mary")
-  user3 = User(name="Tom")
-  user4 = User(name="Betty")
-  user5 = User(name="Mark")
+  user1 = User(username="JoshK", password="password123",name="Josh")
+  user2 = User(username="Mary1997", password="unicorns",name="Mary")
+  user3 = User(username="TomSmith07",password="p123987", name="Tom")
+  user4 = User(username="betty3", password="newpassword", name="Betty")
+  user5 = User(username="MarkW", password="firetruck", name="Mark")
 
   db.session.add_all([user1,user2,user3,user4,user5])
   
