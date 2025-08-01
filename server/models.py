@@ -38,8 +38,8 @@ class User(db.Model):
   
 class UserSchema(Schema):
   id = fields.Int(dump_only=True)
+  username = fields.String()
   name = fields.String()
-
   mood = fields.Nested(lambda: UserSchema(exclude=("user",)))
 
 class MoodTracker(db.Model):
@@ -59,6 +59,5 @@ class MoodTrackerSchema(Schema):
   id = fields.Int(dump_only=True)
   mood = fields.String()
   notes = fields.String()
-
   user = fields.Nested(lambda: UserSchema(exclude=("mood",)))
 
