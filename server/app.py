@@ -6,7 +6,8 @@ from models import *
 
 class Signup(Resource):
   def post(self):
-    pass
+    user_request = request.get_json()
+    name = user_request.get('name')
 
 class Login(Resource):
   def post(self):
