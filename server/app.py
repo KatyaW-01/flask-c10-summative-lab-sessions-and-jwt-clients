@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from flask import request, session
 from flask_restful import Resource
+from sqlalchemy.exc import IntegrityError
 from config import app, db, api
 from models import *
 
@@ -10,6 +11,15 @@ class Signup(Resource):
     name = user_request.get('name')
     username = user_request.get('username')
     password = user_request.get('password')
+    user = User(username=username, password=password, name=name)
+    try:
+      db.session.add(user)
+      db.session.commit()
+      session['user_id'] = user.id
+      return UserSchema.dump(user), 201
+    except IntegrityError:
+      return {'error': '422 Unprocessable Entity'}, 422
+    
 
 class Login(Resource):
   def post(self):
