@@ -35,6 +35,9 @@ class MoodTracker(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
   user = db.relationship('User', back_populates='mood')
 
+  def __repr__(self):
+    return f"<Mood {self.id}, {self.mood}, {self.notes}>"
+
 class MoodTrackerSchema(Schema):
   id = fields.Int(dump_only=True)
   mood = fields.String()
