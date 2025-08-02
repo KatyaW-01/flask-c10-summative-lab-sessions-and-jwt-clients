@@ -35,10 +35,13 @@ class Login(Resource):
     
     return {'error': '401 Unauthorized'}, 401
 
-
 class CheckSession(Resource):
   def get(self):
-    pass
+    if session.get('user_id'):
+      user = User.query.filter(User.id == session['user_id']).first()
+      return UserSchema().dump(user), 200
+    else:
+      return {"error": "User is not logged in"}, 401
 
 class Logout(Resource):
   def delete(self):
@@ -66,7 +69,7 @@ class Moods(Resource):
 
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
-api.add_resource(CheckSession, '/checksession')
+api.add_resource(CheckSession, '/check_session')
 api.add_resource(Logout, '/logout')
 api.add_resource(UserIndex, '/users')
 api.add_resource(Moods, '/moods/<id>')
