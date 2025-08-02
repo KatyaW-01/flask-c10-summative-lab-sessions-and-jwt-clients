@@ -69,8 +69,22 @@ class UserIndex(Resource):
 
 class MoodIndex(Resource):
   def post(self):
-    #create a mood
-    pass
+    if session.get('user_id'):
+      request_json = request.get_json()
+      user_mood = MoodTracker(
+        mood = request_json.get('mood'),
+        notes = request_json.get('notes'),
+        user_id = session['user_id']
+      )
+
+      try:
+        db.session.add(user_mood)
+        db.session.commit()
+        return MoodTrackerSchema().dump(user_mood), 201
+      except IntegrityError:
+        return {'error': '422 Unprocessable Entity'}, 422
+    else:
+      return {"error": "User not logged in"}, 401
 
 class Moods(Resource):
 
