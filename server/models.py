@@ -18,7 +18,7 @@ class User(db.Model):
   _password_hash = db.Column(db.String)
   name = db.Column(db.String, nullable=False)
 
-  mood = db.relationship('MoodTracker', back_populates='user')
+  mood_entries = db.relationship('MoodTracker', back_populates='user')
 
   @hybrid_property
   def password_hash(self):
@@ -39,7 +39,7 @@ class UserSchema(Schema):
   id = fields.Int(dump_only=True)
   username = fields.String()
   name = fields.String()
-  mood = fields.Nested(lambda: UserSchema(exclude=("user",)))
+  mood_entries = fields.Nested(lambda: MoodTrackerSchema(exclude=("user",)),many=True)
 
 class MoodTracker(db.Model):
   __tablename__ = 'mood_tracker'
@@ -49,7 +49,7 @@ class MoodTracker(db.Model):
   notes = db.Column(db.String, nullable=False)
 
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-  user = db.relationship('User', back_populates='mood')
+  user = db.relationship('User', back_populates='mood_entries')
 
   def __repr__(self):
     return f"<Mood {self.id}, {self.mood}, {self.notes}>"
@@ -58,5 +58,5 @@ class MoodTrackerSchema(Schema):
   id = fields.Int(dump_only=True)
   mood = fields.String()
   notes = fields.String()
-  user = fields.Nested(lambda: UserSchema(exclude=("mood",)))
+  user = fields.Nested(lambda: UserSchema(exclude=("mood_entries",)))
 

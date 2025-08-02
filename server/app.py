@@ -3,7 +3,7 @@ from flask import request, session
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from config import app, db, api
-from models import *
+from models import User, UserSchema, MoodTracker, MoodTrackerSchema
 
 class Signup(Resource):
   def post(self):
@@ -11,13 +11,15 @@ class Signup(Resource):
     name = user_request.get('name')
     username = user_request.get('username')
     password = user_request.get('password')
-    user = User(username=username, password=password, name=name)
+    user = User(username=username, name=name)
+    user.password_hash = password
     try:
       db.session.add(user)
       db.session.commit()
       session['user_id'] = user.id
-      return UserSchema.dump(user), 201
-    except IntegrityError:
+      return UserSchema().dump(user), 201
+    except IntegrityError as e:
+      print("IntegrityError:", e)
       return {'error': '422 Unprocessable Entity'}, 422
 
 class Login(Resource):
