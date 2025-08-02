@@ -51,6 +51,7 @@ class Logout(Resource):
     return {"error": "User is already logged out" }, 401
 
 class MoodIndex(Resource):
+  #gets all of a users moods, paginated- cannot see other user's moods
   def get(self):
     user_id = session.get('user_id')
     if user_id:
@@ -68,6 +69,7 @@ class MoodIndex(Resource):
     else:
       return {"error": "User not logged in"}, 401
 
+  #create a new mood, assigned to the user that is logged in
   def post(self):
     if session.get('user_id'):
       request_json = request.get_json()
@@ -87,6 +89,7 @@ class MoodIndex(Resource):
       return {"error": "User not logged in"}, 401
 
 class Moods(Resource):
+  #get a single mood by id, can only view your own moods
   def get(self,id):
     if session.get('user_id'):
       user_mood = MoodTracker.query.filter_by(id=id, user_id=session['user_id']).first()
@@ -96,7 +99,8 @@ class Moods(Resource):
         return {'error': f'Mood {id} not found'}, 404
     else:
       return {"error": "User not logged in"}, 401
-    
+  
+  #edit a mood, can only edit your own moods
   def patch(self, id):
     if session.get('user_id'):
       user_mood = MoodTracker.query.filter_by(id=id, user_id=session['user_id']).first()
@@ -115,6 +119,7 @@ class Moods(Resource):
     else:
       return {"error": "User not logged in"}, 401
 
+  #delete a mood, can only delete your own moods
   def delete(self, id):
     if session.get('user_id'):
       mood = MoodTracker.query.filter_by(id=id, user_id=session['user_id']).first()
