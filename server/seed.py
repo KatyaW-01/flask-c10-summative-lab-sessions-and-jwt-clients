@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from app import app
-from models import *
+from config import app
+from models import db, User, MoodTracker
 
 with app.app_context():
   

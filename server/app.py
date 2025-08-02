@@ -68,3 +68,6 @@ api.add_resource(CheckSession, '/checksession')
 api.add_resource(Logout, '/logout')
 api.add_resource(UserIndex, '/users')
 api.add_resource(Moods, '/moods/<id>')
+
+if __name__ == '__main__':
+    app.run(port=5555, debug=True)
