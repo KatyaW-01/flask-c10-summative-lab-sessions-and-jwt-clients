@@ -88,13 +88,26 @@ class MoodIndex(Resource):
 
 class Moods(Resource):
   def patch(self, id):
-    #update a mood
-    pass
+    if session.get('user_id'):
+      user_mood = MoodTracker.query.filter_by(id=id, user_id=session['user_id']).first()
+      if user_mood:
+        data = request.get_json()
+        if 'mood' in data:
+          user_mood.mood = data['mood']
+        if 'notes' in data:
+          user_mood.notes = data['notes']  
+        
+        db.session.commit()
+
+        return {'message': f'mood {id} updated successfully'}, 200
+      else:
+        return {'error': f'Mood {id} not found'}, 404
+    else:
+      return {"error": "User not logged in"}, 401
 
   def delete(self, id):
-    #delete a mood
     if session.get('user_id'):
-      mood = MoodTracker.query.filter_by(id=id).first()
+      mood = MoodTracker.query.filter_by(id=id, user_id=session['user_id']).first()
       if mood:
         db.session.delete(mood)
         db.session.commit()
