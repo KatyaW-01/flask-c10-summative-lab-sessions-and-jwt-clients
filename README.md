@@ -41,19 +41,16 @@ A user creates an account with a username, password, and name
 User's login with their username and password
 * `GET /check_session` <br>
 Returns a users information if they are logged in, otherwise sends a message informing the user they are not logged in.
-![alt text](images/Screenshot%2025-08-02%at%12.20.20 PM.png)
 * `DELETE /logout` <br>
 Logs a user out 
 * `GET /moods?page=1&per_page=2` <br>
 Gets all of a user's moods, response is paginated
-![alt text](images/Screenshot%2025-08-02%at%12.12.34 PM.png)
 * `POST /moods` <br>
 Create a mood for a user
 * `GET /moods/<int:id>` <br>
 Get a mood by id, user's only have access to their own moods
-![alt text](images/Screenshot%2025-08-02%at%12.18.29 PM.png)
 * `PATCH /moods/<int:id>` <br>
 Update a mood, user's can only update their own moods
 * `DELETE/moods/<int:id>` <br>
 Delete a mood, user's can only delete their own moods
-![alt text](images/Screenshot%2025-08-02%at%12.19.40 PM.png)
+
