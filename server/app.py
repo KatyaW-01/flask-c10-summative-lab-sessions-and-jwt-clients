@@ -45,7 +45,10 @@ class CheckSession(Resource):
 
 class Logout(Resource):
   def delete(self):
-    pass
+    if session.get('user_id'):
+      session['user_id'] = None
+      return {}, 204
+    return {"error": "User is already logged out" }, 401
 
 class UserIndex(Resource):
   def get(self):
