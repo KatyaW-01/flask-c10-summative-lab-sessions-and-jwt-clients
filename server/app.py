@@ -87,6 +87,16 @@ class MoodIndex(Resource):
       return {"error": "User not logged in"}, 401
 
 class Moods(Resource):
+  def get(self,id):
+    if session.get('user_id'):
+      user_mood = MoodTracker.query.filter_by(id=id, user_id=session['user_id']).first()
+      if user_mood:
+        return MoodTrackerSchema().dump(user_mood), 200
+      else:
+        return {'error': f'Mood {id} not found'}, 404
+    else:
+      return {"error": "User not logged in"}, 401
+    
   def patch(self, id):
     if session.get('user_id'):
       user_mood = MoodTracker.query.filter_by(id=id, user_id=session['user_id']).first()
