@@ -52,10 +52,22 @@ class Logout(Resource):
 
 class UserIndex(Resource):
   def get(self):
-    #get all users and associated moods
-    #paginated
-    pass
+    if session.get('user_id'):
+      page = request.args.get("page", 1, type=int)
+      per_page = request.args.get("per_page", 5, type=int)
+      pagination = User.query.paginate(page=page, per_page=per_page, error_out=False)
+      users = pagination.items
+      return {
+        "page": page,
+        "per_page": per_page,
+        "total": pagination.total,
+        "total_pages": pagination.pages,
+        "items": [UserSchema().dump(user) for user in users]
+      }
+    else:
+      return {"error": "User not logged in"}, 401
 
+class MoodIndex(Resource):
   def post(self):
     #create a mood
     pass
@@ -75,6 +87,7 @@ api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(Logout, '/logout')
 api.add_resource(UserIndex, '/users')
+api.add_resource(MoodIndex, '/moods')
 api.add_resource(Moods, '/moods/<id>')
 
 if __name__ == '__main__':
