@@ -50,24 +50,24 @@ class Logout(Resource):
       return {}, 204
     return {"error": "User is already logged out" }, 401
 
-class UserIndex(Resource):
+class MoodIndex(Resource):
   def get(self):
-    if session.get('user_id'):
+    user_id = session.get('user_id')
+    if user_id:
       page = request.args.get("page", 1, type=int)
-      per_page = request.args.get("per_page", 5, type=int)
-      pagination = User.query.paginate(page=page, per_page=per_page, error_out=False)
-      users = pagination.items
+      per_page = request.args.get("per_page", 3, type=int)
+      pagination = MoodTracker.query.filter_by(user_id=user_id).paginate(page=page, per_page=per_page, error_out=False)
+      moods = pagination.items
       return {
         "page": page,
         "per_page": per_page,
         "total": pagination.total,
         "total_pages": pagination.pages,
-        "items": [UserSchema().dump(user) for user in users]
+        "moods": [MoodTrackerSchema().dump(mood) for mood in moods]
       }
     else:
       return {"error": "User not logged in"}, 401
 
-class MoodIndex(Resource):
   def post(self):
     if session.get('user_id'):
       request_json = request.get_json()
@@ -131,7 +131,6 @@ api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(Logout, '/logout')
-api.add_resource(UserIndex, '/users')
 api.add_resource(MoodIndex, '/moods')
 api.add_resource(Moods, '/moods/<int:id>')
 
