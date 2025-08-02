@@ -87,14 +87,22 @@ class MoodIndex(Resource):
       return {"error": "User not logged in"}, 401
 
 class Moods(Resource):
-
-  def patch(self):
+  def patch(self, id):
     #update a mood
     pass
 
-  def delete(self):
+  def delete(self, id):
     #delete a mood
-    pass
+    if session.get('user_id'):
+      mood = MoodTracker.query.filter_by(id=id).first()
+      if mood:
+        db.session.delete(mood)
+        db.session.commit()
+        return {'message': f'Mood {id} for user {session.get('user_id')} deleted successfully'}, 200
+      else:
+        return {'error': f'Mood {id} not found'}, 404
+    else:
+      return {"error": "User not logged in"}, 401
 
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
@@ -102,7 +110,7 @@ api.add_resource(CheckSession, '/check_session')
 api.add_resource(Logout, '/logout')
 api.add_resource(UserIndex, '/users')
 api.add_resource(MoodIndex, '/moods')
-api.add_resource(Moods, '/moods/<id>')
+api.add_resource(Moods, '/moods/<int:id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
